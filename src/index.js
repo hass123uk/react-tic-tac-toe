@@ -94,12 +94,17 @@ class Game extends React.Component {
             const column = (step.squareChangedIndex % totalColumns) + 1;
             const row = Math.floor(step.squareChangedIndex / totalColumns) + 1;
 
-            const desc = move ?
+            const description = move ?
                 `Go to Move #${move} (column:${column}, row:${row})` :
                 'Go to game start';
             return (
                 <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                    <button
+                        className={move === (this.state.stepNumber) ? 'activeMove' : ''}
+                        onClick={() => this.jumpTo(move)}
+                    >
+                        {description}
+                    </button>
                 </li>
             );
         });
