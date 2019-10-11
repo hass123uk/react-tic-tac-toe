@@ -30,7 +30,7 @@ class Board extends React.Component {
             const columns = Array(3).fill().map(() => {
                 return this.renderSquare(squareIndex++)
             });
-            return(
+            return (
                 <div key={index} className="board-row">
                     {columns}
                 </div>
@@ -51,14 +51,16 @@ class Game extends React.Component {
             history: [{
                 squares: Array(9).fill(null),
                 squareChangedIndex: null,
+                stepNumber: 0,
             }],
-            stepNumber: 0,
+            currentStepNumber: 0,
+            historyIsAscending: true,
             xIsNext: true,
         };
     }
 
     handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
+        const history = this.state.history.slice(0, this.state.currentStepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         if (calculateWinner(squares) || squares[i]) {
@@ -68,44 +70,52 @@ class Game extends React.Component {
         this.setState({
             history: history.concat([{
                 squares: squares,
-                squareChangedIndex: i
+                squareChangedIndex: i,
+                stepNumber: history.length
             }]),
-            stepNumber: history.length,
+            currentStepNumber: history.length,
             xIsNext: !this.state.xIsNext,
         });
     }
 
     jumpTo(step) {
         this.setState({
-            stepNumber: step,
+            currentStepNumber: step,
             xIsNext: (step % 2) === 0,
         });
     }
 
     render() {
         const history = this.state.history;
-        const current = this.state.history[this.state.stepNumber];
+        const current = this.state.history[this.state.currentStepNumber];
         const winner = calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
-            const totalColumns = 3;
-            const column = (step.squareChangedIndex % totalColumns) + 1;
-            const row = Math.floor(step.squareChangedIndex / totalColumns) + 1;
+        const moves = history
+            .concat()
+            .sort((a, b) => {
+                return this.state.historyIsAscending ?
+                    a.stepNumber - b.stepNumber :
+                    b.stepNumber - a.stepNumber;
+            }).map((step, move) => {
+                const totalColumns = 3;
+                const column = (step.squareChangedIndex % totalColumns) + 1;
+                const row = Math.floor(step.squareChangedIndex / totalColumns) + 1;
 
-            const description = move ?
-                `Go to Move #${move} (column:${column}, row:${row})` :
-                'Go to game start';
-            return (
-                <li key={move}>
-                    <button
-                        className={move === (this.state.stepNumber) ? 'activeMove' : ''}
-                        onClick={() => this.jumpTo(move)}
-                    >
-                        {description}
-                    </button>
-                </li>
-            );
-        });
+                const description = step.stepNumber ?
+                    `Go to Move #${step.stepNumber} (column:${column}, row:${row})` :
+                    'Go to game start';
+
+                return (
+                    <li key={step.stepNumber}>
+                        <button
+                            className={step.stepNumber === (this.state.currentStepNumber) ? 'activeMove' : ''}
+                            onClick={() => this.jumpTo(step.stepNumber)}
+                        >
+                            {description}
+                        </button>
+                    </li>
+                );
+            });
 
         let status;
         if (winner) {
@@ -124,6 +134,11 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <div>
+                        <button onClick={() => this.setState({ historyIsAscending: !this.state.historyIsAscending })}>
+                            Order moves by
+                        </button>
+                    </div>
                     <div>{moves}</div>
                 </div>
             </div>
