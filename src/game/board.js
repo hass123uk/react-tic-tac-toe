@@ -1,9 +1,13 @@
 import React from 'react';
 
 function Square(props) {
+    let buttonClasses = ["square"]
+    if(props.highlight){
+        buttonClasses = buttonClasses.concat(["highlight"])
+    }
     return (
         <button
-            className="square"
+            className={buttonClasses.join(' ')}
             onClick={props.onClick}
         >
             {props.value}
@@ -13,9 +17,14 @@ function Square(props) {
 
 export class Board extends React.Component {
     renderSquare(i) {
+        let highlight = false;
+        if(this.props.winningLine){
+            highlight = this.props.winningLine.some((v) => v === i);
+        }
         return (
             <Square
                 key={i}
+                highlight={highlight}
                 value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
             />

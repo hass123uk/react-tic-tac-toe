@@ -37,6 +37,10 @@ ul {
     outline: none;
 }
 
+.square.highlight {
+    background: forestgreen;
+}
+
 .game {
     display: flex;
     flex-direction: row;
