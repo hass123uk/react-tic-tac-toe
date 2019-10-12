@@ -20,3 +20,7 @@ export function calculateWinner(squares) {
     }
     return null;
 }
+
+export function isDrawn(squares) {
+    return squares.every((v) => v !== null);
+}

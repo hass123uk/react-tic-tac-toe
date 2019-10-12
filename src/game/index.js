@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Board } from "./board";
 import { History } from "./history";
-import { calculateWinner } from "./calculateWinner";
+import { calculateWinner, isDrawn } from "./calculateWinner";
 
 export class Game extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.activeStepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
+        if (isDrawn(squares) || calculateWinner(squares) || squares[i]) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -53,6 +53,8 @@ export class Game extends React.Component {
         if (result) {
             status = `Winner: ${result.winner}`;
             winningLine = result.winningLine;
+        } else if(isDrawn(current.squares)){
+            status = 'Draw!'
         } else {
             status = `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`;
             winningLine = null;
