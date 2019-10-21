@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Board } from "./board";
-import { History } from "./history";
-import { calculateWinner, isDrawn } from "./calculateWinner";
+import { Board } from "./components/board/Board";
+import { StepList } from "./components/steps/StepList";
+import { calculateWinner, isDrawn } from "./lib/gameHelpers";
 
 export class Game extends React.Component {
     constructor(props) {
@@ -71,7 +71,7 @@ export class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <History
+                    <StepList
                         history={this.state.history}
                         activeStepNumber={this.state.activeStepNumber}
                         onStepClick={(stepNumber) => this.handleStepClick(stepNumber)}

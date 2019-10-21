@@ -1,23 +1,11 @@
 import React from 'react';
+import {Step} from './Step';
 
-function HistoryStep(props) {
-    return (
-        <li>
-            <button
-                className={props.activeStep ? 'activeMove' : ''}
-                onClick={props.onClick}
-            >
-                {props.description}
-            </button>
-        </li>
-    );
-}
-
-export class History extends React.Component {
+export class StepList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            historyIsAscending: true,
+            isAscending: true,
         }
     }
 
@@ -34,12 +22,12 @@ export class History extends React.Component {
     render() {
         const moves = this.props.history.concat()
             .sort((a, b) => {
-                return this.state.historyIsAscending ?
+                return this.state.isAscending ?
                     a.stepNumber - b.stepNumber :
                     b.stepNumber - a.stepNumber;
             }).map((step) => {
                 return (
-                    <HistoryStep
+                    <Step
                         key={step.stepNumber}
                         activeStep={step.stepNumber === (this.props.activeStepNumber)}
                         onClick={() => this.props.onStepClick(step.stepNumber)}
@@ -49,8 +37,8 @@ export class History extends React.Component {
             });
         return (
             <div>
-                <button onClick={() => this.setState({ historyIsAscending: !this.state.historyIsAscending })}>
-                    Order moves by
+                <button onClick={() => this.setState({ isAscending: !this.state.isAscending })}>
+                    Order moves {this.state.isAscending ? '\u2B61' : '\u2B63'}
                 </button>
                 <div>{moves}</div>
             </div>
